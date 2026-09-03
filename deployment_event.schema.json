@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DeploymentEvent",
+  "description": "One entry in scenario/deployment_events.json. Synthetic GitHub-Actions-style deployment/apply event, linking a commit to a live infrastructure change.",
+  "type": "object",
+  "required": ["deployment_id", "commit_sha", "workflow_name", "status", "applied_at"],
+  "properties": {
+    "deployment_id": { "type": "string" },
+    "commit_sha": {
+      "type": "string",
+      "description": "Must match a commit_sha present in commit_history.json"
+    },
+    "workflow_name": {
+      "type": "string",
+      "description": "e.g. 'terraform-apply.yml'"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["success", "failed"]
+    },
+    "applied_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "environment": {
+      "type": "string",
+      "description": "e.g. 'prod' — flat string, no multi-env complexity needed for MVP"
+    }
+  }
+}

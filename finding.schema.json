@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Finding",
+  "description": "scenario/finding.json — the single seeded finding that triggers the whole AEGIS pipeline.",
+  "type": "object",
+  "required": ["finding_id", "finding_type", "resource_name", "resource_type", "severity", "description", "detected_at"],
+  "properties": {
+    "finding_id": { "type": "string" },
+    "finding_type": {
+      "type": "string",
+      "enum": ["PUBLIC_BUCKET_ACL"],
+      "description": "Fixed to one value for the MVP's one canonical scenario"
+    },
+    "resource_name": {
+      "type": "string",
+      "description": "Must match the bucket resource name in scenario/target_infra/main.tf, byte for byte"
+    },
+    "resource_type": {
+      "type": "string",
+      "enum": ["google_storage_bucket"]
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+    },
+    "description": { "type": "string" },
+    "detected_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Should be later than the introducing deployment's applied_at"
+    }
+  }
+}

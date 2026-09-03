@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Commit",
+  "description": "One entry in scenario/commit_history.json. Synthetic git-style commit log, scoped to this scenario only — not general git blame.",
+  "type": "object",
+  "required": ["commit_sha", "author", "message", "timestamp", "files_changed", "diff"],
+  "properties": {
+    "commit_sha": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{7,40}$"
+    },
+    "author": { "type": "string" },
+    "message": { "type": "string" },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "files_changed": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "diff": {
+      "type": "string",
+      "description": "Unified-diff-style text snippet of the change made in this commit"
+    },
+    "is_introducing_commit": {
+      "type": "boolean",
+      "description": "True for exactly one commit in the history: the one that added the allUsers binding. Explicit flag kept alongside the diff so git_history_tools.py doesn't need diff-parsing heuristics on Day 1 — it can trust this field directly, then optionally cross-check it against the diff text."
+    }
+  }
+}

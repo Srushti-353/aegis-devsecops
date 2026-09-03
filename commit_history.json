@@ -1,0 +1,56 @@
+[
+  {
+    "commit_sha": "a1b2c3d",
+    "author": "priya.nair",
+    "message": "Initial bucket + service account scaffolding for data platform",
+    "timestamp": "2026-08-10T09:12:00Z",
+    "files_changed": ["target_infra/main.tf"],
+    "diff": "+resource \"google_storage_bucket\" \"sensitive_data\" {\n+  name          = \"aegis-sensitive-data-bucket\"\n+  location      = \"US\"\n+  force_destroy = true\n+  uniform_bucket_level_access = true\n+}\n+\n+resource \"google_service_account\" \"app_sa\" {\n+  account_id   = \"aegis-app-sa\"\n+  display_name = \"AEGIS demo app service account\"\n+}",
+    "is_introducing_commit": false
+  },
+  {
+    "commit_sha": "b7e4f10",
+    "author": "priya.nair",
+    "message": "Grant app service account read access to sensitive bucket",
+    "timestamp": "2026-08-12T14:03:00Z",
+    "files_changed": ["target_infra/main.tf"],
+    "diff": "+resource \"google_storage_bucket_iam_member\" \"app_sa_read_access\" {\n+  bucket = google_storage_bucket.sensitive_data.name\n+  role   = \"roles/storage.objectViewer\"\n+  member = \"serviceAccount:${google_service_account.app_sa.email}\"\n+}",
+    "is_introducing_commit": false
+  },
+  {
+    "commit_sha": "c9d2a44",
+    "author": "marcus.lee",
+    "message": "Add compute instance for data ingestion app",
+    "timestamp": "2026-08-14T11:47:00Z",
+    "files_changed": ["target_infra/main.tf"],
+    "diff": "+resource \"google_compute_instance\" \"app_vm\" {\n+  name         = \"aegis-app-vm\"\n+  machine_type = \"e2-small\"\n+  zone         = \"us-central1-a\"\n+  service_account {\n+    email  = google_service_account.app_sa.email\n+    scopes = [\"cloud-platform\"]\n+  }\n+}",
+    "is_introducing_commit": false
+  },
+  {
+    "commit_sha": "f3a8e91",
+    "author": "marcus.lee",
+    "message": "Quick fix: allow public read on sensitive bucket to unblock partner demo",
+    "timestamp": "2026-08-18T16:55:00Z",
+    "files_changed": ["target_infra/main.tf"],
+    "diff": "+resource \"google_storage_bucket_iam_member\" \"public_read_access\" {\n+  bucket = google_storage_bucket.sensitive_data.name\n+  role   = \"roles/storage.objectViewer\"\n+  member = \"allUsers\"\n+}",
+    "is_introducing_commit": true
+  },
+  {
+    "commit_sha": "d5c6b28",
+    "author": "priya.nair",
+    "message": "Add labels for cost tracking and data classification",
+    "timestamp": "2026-08-20T10:22:00Z",
+    "files_changed": ["target_infra/main.tf"],
+    "diff": "+  labels = {\n+    data_classification = \"sensitive\"\n+    environment         = \"prod\"\n+  }",
+    "is_introducing_commit": false
+  },
+  {
+    "commit_sha": "e8f1d77",
+    "author": "marcus.lee",
+    "message": "Pin google provider version",
+    "timestamp": "2026-08-22T08:30:00Z",
+    "files_changed": ["target_infra/main.tf"],
+    "diff": "-      version = \">= 5.0\"\n+      version = \"~> 5.0\"",
+    "is_introducing_commit": false
+  }
+]

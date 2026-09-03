@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AEGIS | Attack Path Remediation Intelligence</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">AEGIS</div>
+          <h1>Attack Path Remediation Intelligence</h1>
+        </div>
+        <div class="header-tag">Deterministic security intelligence</div>
+      </header>
+
+      <p class="subtitle">
+        Trace incidents back to the engineering change that caused them,
+        generate controlled remediation, and prove the attack path is closed.
+      </p>
+
+      <div class="mode-banner">{{ banner }}</div>
+
+      <section class="panel overview">
+        <div class="overview-grid">
+          <div class="stat-card severity-card">
+            <span class="label">Severity</span>
+            <strong>{{ case.attack_path.severity }}</strong>
+          </div>
+          <div class="stat-card risk-card">
+            <span class="label">Risk</span>
+            <strong>{{ case.attack_path.risk_score }} / 100</strong>
+          </div>
+          <div class="stat-card">
+            <span class="label">Finding ID</span>
+            <strong>{{ case.finding.finding_id }}</strong>
+          </div>
+          <div class="stat-card">
+            <span class="label">Finding</span>
+            <strong>{{ case.finding.finding_type }}</strong>
+          </div>
+          <div class="stat-card">
+            <span class="label">Affected Resource</span>
+            <strong>{{ case.resource.resource_name or case.finding.resource_name }}</strong>
+          </div>
+          <div class="stat-card status-card">
+            <span class="label">Status</span>
+            <strong>
+              {% if case.verification.status == 'VERIFIED' %}VERIFIED{% else %}OPEN{% endif %}
+            </strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-header">
+          <h2>Attack Path</h2>
+          <span class="badge badge-alert">EXPLOITABLE</span>
+        </div>
+
+        <div class="node-flow">
+          <div class="node">Internet</div>
+          <div class="arrow">→</div>
+          <div class="node primary">{{ case.attack_path.target }}</div>
+        </div>
+
+        <div class="meta-row">
+          <div>
+            <span class="meta-label">Attack Path</span>
+            <strong>{{ case.attack_path.source }} → {{ case.attack_path.target }}</strong>
+          </div>
+          <div>
+            <span class="meta-label">Risk Score</span>
+            <strong>{{ case.attack_path.risk_score }}</strong>
+          </div>
+          <div>
+            <span class="meta-label">Blast Radius</span>
+            <strong>{{ case.attack_path.blast_radius }}</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel root-cause-panel">
+        <div class="section-header">
+          <h2>Engineering Root Cause</h2>
+          <span class="badge badge-good">HIGH</span>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-step">
+            <span class="step-title">Terraform change</span>
+          </div>
+          <div class="arrow-vertical">↓</div>
+          <div class="timeline-step">
+            <span class="step-title">Commit {{ case.root_cause.commit_sha }}</span>
+            <small>{{ case.root_cause.message }}</small>
+          </div>
+          <div class="arrow-vertical">↓</div>
+          <div class="timeline-step">
+            <span class="step-title">Deployment {{ case.root_cause.deployment_id }}</span>
+          </div>
+          <div class="arrow-vertical">↓</div>
+          <div class="timeline-step">
+            <span class="step-title">Public bucket exposure</span>
+          </div>
+          <div class="arrow-vertical">↓</div>
+          <div class="timeline-step">
+            <span class="step-title">Security finding</span>
+          </div>
+        </div>
+
+        <div class="root-cause-details">
+          <div>
+            <span class="meta-label">Root Cause Confidence</span>
+            <strong>HIGH</strong>
+          </div>
+          <div>
+            <span class="meta-label">Author</span>
+            <strong>{{ case.root_cause.author }}</strong>
+          </div>
+          <div>
+            <span class="meta-label">Deployment</span>
+            <strong>{{ case.root_cause.deployment_id }}</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel why-it-matters">
+        <div class="section-header">
+          <h2>Why This Matters</h2>
+        </div>
+        <div class="two-column">
+          <div class="quote-box">
+            <span class="meta-label">Traditional security view</span>
+            <p>"Sensitive bucket is publicly accessible."</p>
+          </div>
+          <div class="quote-box accent-box">
+            <span class="meta-label">AEGIS engineering view</span>
+            <p>"This exposure was introduced by commit {{ case.root_cause.commit_sha }} and propagated by deployment {{ case.root_cause.deployment_id }}."</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel remediation-panel">
+        <div class="section-header">
+          <h2>Remediation</h2>
+          <span class="badge badge-warn">AI / ADK</span>
+        </div>
+
+        <div class="remediation-box">
+          <div class="meta-row compact">
+            <div>
+              <span class="meta-label">Affected IaC</span>
+              <strong>{{ case.remediation.affected_iac }}</strong>
+            </div>
+            <div>
+              <span class="meta-label">Problem</span>
+              <strong>{{ case.remediation.problem }}</strong>
+            </div>
+          </div>
+          <p class="remediation-summary">
+            <strong>Recommended action:</strong> {{ case.remediation.recommended_action }}
+          </p>
+        </div>
+
+        <div class="alert-box">
+          <strong>AI Remediation Status:</strong>
+          {{ case.remediation.status }}
+        </div>
+      </section>
+
+      <section class="panel verification-panel">
+        <div class="section-header">
+          <h2>Verified Closure</h2>
+          <span class="badge badge-success">VERIFIED CLOSED</span>
+        </div>
+
+        <div class="verification-grid">
+          <div class="verification-box before-box">
+            <h3>Before</h3>
+            <p>Risk {{ case.verification.before_risk }}</p>
+            <p>{{ case.attack_path.severity }}</p>
+            <p>{{ case.attack_path.source }} → {{ case.attack_path.target }}</p>
+            <p>Attack path exists</p>
+          </div>
+          <div class="verification-box after-box">
+            <h3>After</h3>
+            <p>Risk {{ case.verification.after_risk }}</p>
+            <p>No exploitable path</p>
+            <p>Attack path eliminated</p>
+          </div>
+        </div>
+
+        <div class="verification-note">
+          Verified using deterministic candidate evaluation against the controlled patch fixture.
+        </div>
+      </section>
+
+      <section class="panel pipeline-panel">
+        <div class="section-header">
+          <h2>AEGIS Pipeline</h2>
+        </div>
+        <div class="pipeline">
+          <div class="pipeline-step deterministic">FIND</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipeline-step deterministic">ATTACK PATH</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipeline-step deterministic">ROOT CAUSE</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipeline-step ai">REMEDIATION</div>
+          <div class="pipe-arrow">→</div>
+          <div class="pipeline-step deterministic">VERIFICATION</div>
+        </div>
+        <p class="pipeline-caption">AI cannot override AEGIS deterministic security decisions.</p>
+      </section>
+
+      <section class="panel architecture-panel">
+        <div class="section-header">
+          <h2>Google Cloud Architecture</h2>
+        </div>
+        <div class="architecture-stack">
+          <div class="stack-box">BigQuery Sandbox</div>
+          <div class="stack-arrow">↓</div>
+          <div class="stack-box">Google ADK</div>
+          <div class="stack-arrow">↓</div>
+          <div class="stack-box">Gemini</div>
+          <div class="stack-arrow">↓</div>
+          <div class="stack-box">Python deterministic engine</div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

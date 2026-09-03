@@ -1,0 +1,9 @@
+{
+  "finding_id": "finding-0001",
+  "finding_type": "PUBLIC_BUCKET_ACL",
+  "resource_name": "aegis-sensitive-data-bucket",
+  "resource_type": "google_storage_bucket",
+  "severity": "CRITICAL",
+  "description": "Cloud Storage bucket 'aegis-sensitive-data-bucket' grants roles/storage.objectViewer to allUsers, making its contents publicly readable over the internet.",
+  "detected_at": "2026-08-25T07:00:00Z"
+}

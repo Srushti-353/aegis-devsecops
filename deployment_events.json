@@ -1,0 +1,50 @@
+[
+  {
+    "deployment_id": "deploy-001",
+    "commit_sha": "a1b2c3d",
+    "workflow_name": "terraform-apply.yml",
+    "status": "success",
+    "applied_at": "2026-08-10T09:20:00Z",
+    "environment": "prod"
+  },
+  {
+    "deployment_id": "deploy-002",
+    "commit_sha": "b7e4f10",
+    "workflow_name": "terraform-apply.yml",
+    "status": "success",
+    "applied_at": "2026-08-12T14:10:00Z",
+    "environment": "prod"
+  },
+  {
+    "deployment_id": "deploy-003",
+    "commit_sha": "c9d2a44",
+    "workflow_name": "terraform-apply.yml",
+    "status": "success",
+    "applied_at": "2026-08-14T11:55:00Z",
+    "environment": "prod"
+  },
+  {
+    "deployment_id": "deploy-004",
+    "commit_sha": "f3a8e91",
+    "workflow_name": "terraform-apply.yml",
+    "status": "success",
+    "applied_at": "2026-08-18T17:02:00Z",
+    "environment": "prod"
+  },
+  {
+    "deployment_id": "deploy-005",
+    "commit_sha": "d5c6b28",
+    "workflow_name": "terraform-apply.yml",
+    "status": "success",
+    "applied_at": "2026-08-20T10:30:00Z",
+    "environment": "prod"
+  },
+  {
+    "deployment_id": "deploy-006",
+    "commit_sha": "e8f1d77",
+    "workflow_name": "terraform-apply.yml",
+    "status": "success",
+    "applied_at": "2026-08-22T08:37:00Z",
+    "environment": "prod"
+  }
+]

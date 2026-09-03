@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Resource",
+  "description": "A single Terraform resource block, as parsed from target_infra .tf files. Not persisted as its own JSON file on Day 1 — this schema documents the shape terraform_parser_tools.py must produce from main.tf / main.patched.tf.",
+  "type": "object",
+  "required": ["resource_type", "resource_name", "attributes"],
+  "properties": {
+    "resource_type": {
+      "type": "string",
+      "description": "Terraform resource type, e.g. 'google_storage_bucket', 'google_storage_bucket_iam_member'"
+    },
+    "resource_name": {
+      "type": "string",
+      "description": "Terraform local resource label (the second string in the resource block header)"
+    },
+    "attributes": {
+      "type": "object",
+      "description": "Raw key/value attributes as parsed by python-hcl2 (bucket, role, member, name, etc.)"
+    },
+    "source_file": {
+      "type": "string",
+      "description": "Relative path of the .tf file this resource was parsed from"
+    }
+  }
+}
