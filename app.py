@@ -10,6 +10,11 @@ from fastapi.templating import Jinja2Templates
 
 from config import AEGIS_BIGQUERY_DATASET, AEGIS_GCP_PROJECT, get_default_finding, get_port, is_demo_mode
 from logging_config import LOGGER, log_event
+from live_evidence import investigate_root_cause, verify_patched_repository
+from repository_investigator import investigate_repository
+from repository_scanner import RepositoryScanError, RepositoryScanTimeout
+from remediation_planner import plan_remediation
+from security_models import LiveEvidenceRequest, RemediationPlanRequest, RepositoryInvestigationRequest, VerificationRequest
 from ui_service import get_dashboard_case
 
 ROOT = Path(__file__).resolve().parent
@@ -43,7 +48,7 @@ def _check_bigquery_readiness() -> bool:
 def _dashboard_banner() -> str:
     if is_demo_mode() or not _check_bigquery_readiness():
         return "Demo fallback: using canonical local evidence"
-    return "Evidence source: BigQuery"
+    return "Evidence source: BigQuery; canonical local evidence available"
 
 
 @app.get("/health")
@@ -75,6 +80,48 @@ def api_case(finding_id: str) -> dict:
     except Exception as exc:
         log_event("API_ERROR", finding_id=finding_id, error=str(exc))
         raise HTTPException(status_code=500, detail=f"Unable to load case data: {exc}") from exc
+
+
+@app.post("/api/investigate-repository")
+def investigate_repository_api(payload: RepositoryInvestigationRequest):
+    try:
+        return investigate_repository(str(payload.repository_url))
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except RepositoryScanTimeout as exc:
+        raise HTTPException(status_code=504, detail="repository investigation timed out") from exc
+    except RepositoryScanError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    except Exception as exc:
+        log_event("REPOSITORY_INVESTIGATION_ERROR", error=str(exc))
+        raise HTTPException(status_code=500, detail="repository investigation failed") from exc
+
+
+@app.post("/api/remediation-plan")
+def remediation_plan_api(payload: RemediationPlanRequest):
+    return {"plan": plan_remediation(payload.finding)}
+
+
+@app.post("/api/root-cause")
+def root_cause_api(payload: LiveEvidenceRequest):
+    try:
+        return {"root_cause": investigate_root_cause(str(payload.repository_url), payload.finding), "ai_status": "not_requested"}
+    except (ValueError, RepositoryScanError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except Exception as exc:
+        log_event("LIVE_ROOT_CAUSE_ERROR", error=str(exc))
+        raise HTTPException(status_code=500, detail="root-cause attribution failed") from exc
+
+
+@app.post("/api/verify-repository")
+def verify_repository_api(payload: VerificationRequest):
+    try:
+        return verify_patched_repository(str(payload.repository_url), str(payload.patched_repository_url) if payload.patched_repository_url else None, payload.finding)
+    except (ValueError, RepositoryScanError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except Exception as exc:
+        log_event("LIVE_VERIFICATION_ERROR", error=str(exc))
+        raise HTTPException(status_code=500, detail="repository verification failed") from exc
 
 
 @app.get("/", response_class=HTMLResponse)

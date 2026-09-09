@@ -20,6 +20,46 @@ def test_homepage_returns_200():
     assert "AEGIS" in response.text
 
 
+def test_live_investigation_script_is_loaded():
+    response = client.get("/")
+    assert '<script src="/static/app.js" defer></script>' in response.text
+    assert 'id="investigation-form"' in response.text
+    assert 'id="run-investigation"' in response.text
+
+
+def test_live_remediation_controls_are_present_in_frontend_assets():
+    page = client.get("/").text
+    script = client.get("/static/app.js").text
+    assert "LIVE REPOSITORY INVESTIGATION" in page
+    assert "INVESTIGATE" in script
+    assert "/api/remediation-plan" in script
+    assert "VERIFY AFTER FIX" in script
+
+
+def test_live_remediation_renderer_handles_structured_plan_values():
+    script = client.get("/static/app.js").text
+    assert "renderRemediationPlan" in script
+    assert "typeof value === 'object'" in script
+    assert "PROPOSED - NOT EXECUTED" in script
+    assert "Verification required" in script
+    assert "[object Object]" not in script
+
+
+def test_live_remediation_handles_fastapi_validation_errors():
+    script = client.get("/static/app.js").text
+    assert "formatApiError" in script
+    assert "item.loc.join('.')" in script
+    assert "Request failed. Check API contract." in script
+    assert "investigation.findings.findIndex" in script
+
+
+def test_live_evidence_and_verification_controls_are_present():
+    script = client.get("/static/app.js").text
+    assert "/api/root-cause" in script
+    assert "/api/verify-repository" in script
+    assert "DETERMINISTIC / SCANNER EVIDENCE" in script
+
+
 def test_canonical_finding_appears():
     response = client.get("/")
     assert "finding-0001" in response.text

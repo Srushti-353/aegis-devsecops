@@ -85,6 +85,54 @@ h2 {
   font-size: 0.8rem;
 }
 
+.live-investigation {
+  border-color: rgba(126, 247, 209, 0.32);
+  background: linear-gradient(135deg, rgba(126, 247, 209, 0.08), rgba(12, 21, 36, 0.9) 46%);
+}
+.canonical-heading { margin: 34px 0 12px; color: var(--accent); font-size: 0.82rem; font-weight: 800; letter-spacing: 0.12rem; }
+
+.repo-label { display: block; color: var(--muted); margin-bottom: 8px; font-size: 0.85rem; }
+.repo-input-row { display: flex; gap: 10px; }
+.repo-input-row input { flex: 1; min-width: 0; padding: 13px 14px; border: 1px solid var(--panel-border); border-radius: 10px; background: rgba(0, 0, 0, 0.22); color: var(--text); font: inherit; }
+button { border: 0; border-radius: 10px; padding: 0 18px; background: var(--accent-strong); color: #06141a; font-weight: 800; letter-spacing: 0.04rem; cursor: pointer; }
+button:disabled { opacity: 0.5; cursor: wait; }
+.investigation-status { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.loading-stage { padding: 8px 10px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--muted); font-size: 0.78rem; }
+.loading-stage.active, .loading-stage.complete { color: var(--accent-strong); border-color: rgba(126,247,209,0.35); }
+#investigation-results { margin-top: 22px; }
+#investigation-results h3 { margin: 20px 0 10px; }
+.investigation-result-header { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.investigation-result-header span, .profile-values { color: var(--muted); }
+.scanner-status, .security-summary { display: grid; gap: 10px; }
+.scanner-status { grid-template-columns: repeat(2, minmax(160px, 1fr)); }
+.scanner-status div, .security-summary div { display: flex; justify-content: space-between; gap: 12px; padding: 12px; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; background: rgba(255,255,255,0.025); }
+.scanner-status span, .security-summary span { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; }
+.scanner-status small { display: block; margin-top: 4px; color: var(--warning); text-transform: none; font-size: 0.72rem; }
+.security-summary { grid-template-columns: repeat(5, minmax(90px, 1fr)); }
+.security-summary strong { font-size: 1.2rem; }
+.finding-card { padding: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; margin-top: 10px; background: rgba(0,0,0,0.14); }
+.finding-card h4 { margin: 10px 0 6px; }
+.finding-card p, .finding-card small { color: var(--muted); margin: 5px 0; }
+.finding-card-header { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.8rem; }
+.investigate-finding { min-height: 38px; margin-top: 14px; padding: 0 14px; }
+.remediation-panel { margin-top: 16px; padding: 16px; border-left: 3px solid var(--accent-strong); background: rgba(126,247,209,0.05); }
+.deterministic-evidence { padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--muted); }
+.deterministic-evidence strong { color: var(--accent-strong); font-size: 0.75rem; letter-spacing: 0.08rem; }
+.remediation-panel h4 { margin: 14px 0 6px; color: var(--accent); }
+.remediation-panel p { line-height: 1.5; }
+.live-remediation-label { color: var(--accent-strong); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1rem; }
+.not-executed { color: var(--warning); font-weight: 800; letter-spacing: 0.08rem; }
+.verify-after-fix { min-height: 38px; padding: 0 14px; }
+.verification-note-live { color: var(--muted); }
+.severity { font-weight: 800; }
+.severity-critical { color: var(--danger); } .severity-high { color: #ff9d7a; } .severity-medium { color: var(--warning); } .severity-low { color: var(--success); }
+.empty-findings { padding: 18px; color: var(--accent-strong); border: 1px solid rgba(126,247,209,0.2); border-radius: 10px; }
+.scan-complete { color: var(--accent-strong); font-weight: 800; letter-spacing: 0.1rem; margin-bottom: 14px; }
+.finding-card details { margin-top: 12px; color: var(--muted); }
+.finding-card summary { cursor: pointer; color: var(--accent); }
+.view-all-findings { min-height: 42px; margin-top: 14px; padding: 0 14px; }
+.all-findings[hidden] { display: none; }
+
 .panel {
   background: var(--panel);
   border: 1px solid var(--panel-border);
@@ -379,4 +427,8 @@ h2 {
   .page-shell {
     padding-inline: 14px;
   }
+
+  .repo-input-row { flex-direction: column; }
+  button { min-height: 44px; }
+  .scanner-status, .security-summary { grid-template-columns: 1fr 1fr; }
 }

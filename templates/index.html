@@ -23,6 +23,34 @@
 
       <div class="mode-banner">{{ banner }}</div>
 
+      <section class="panel live-investigation" aria-labelledby="live-investigation-title">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">AEGIS LIVE REPOSITORY INVESTIGATION</div>
+            <h2 id="live-investigation-title">Scan a public GitHub repository</h2>
+          </div>
+          <span class="badge badge-good">STATIC ANALYSIS</span>
+        </div>
+        <form id="investigation-form">
+          <label class="repo-label" for="repository-url">GitHub Repository URL</label>
+          <div class="repo-input-row">
+            <input id="repository-url" name="repository_url" type="url" required
+              placeholder="https://github.com/OWASP/NodeGoat" autocomplete="url" />
+            <button type="submit" id="run-investigation">RUN AEGIS</button>
+          </div>
+        </form>
+        <div id="investigation-status" class="investigation-status" hidden>
+          <div class="loading-stage active">1. Acquiring repository</div>
+          <div class="loading-stage">2. Profiling repository</div>
+          <div class="loading-stage">3. Running security scanners</div>
+          <div class="loading-stage">4. Normalizing evidence</div>
+          <div class="loading-stage">5. Investigation complete</div>
+        </div>
+        <div id="investigation-error" class="alert-box" hidden></div>
+        <div id="investigation-results" hidden></div>
+      </section>
+
+      <div class="canonical-heading">CANONICAL ATTACK-PATH DEMONSTRATION</div>
       <section class="panel overview">
         <div class="overview-grid">
           <div class="stat-card severity-card">
@@ -231,5 +259,6 @@
         </div>
       </section>
     </div>
+    <script src="/static/app.js" defer></script>
   </body>
 </html>
